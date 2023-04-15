@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CODEInterpreter-v1", "CODEInterpreter-v1.csproj", "{43A95735-646A-49C5-9714-E334401F29A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{43A95735-646A-49C5-9714-E334401F29A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43A95735-646A-49C5-9714-E334401F29A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43A95735-646A-49C5-9714-E334401F29A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43A95735-646A-49C5-9714-E334401F29A0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F06FE108-12FB-49D2-A6BF-3D8A8BE33814}
+	EndGlobalSection
+EndGlobal
