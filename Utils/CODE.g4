@@ -1,6 +1,6 @@
-grammar Speak;
+grammar CODE;
 
-program: comment* 'BEGIN CODE' line* 'END CODE' comment*;
+program: comment* line* comment*;
 
 line: (declaration | declaration assignment | assignment | declareassign | conditional | display | scan | comment | statement) NEWLINE* comment*;
 
@@ -61,7 +61,6 @@ if_else_selection: 'IF' '(' bool_expression ')' 'BEGIN IF' line* expression* 'EN
 //if_else_multiple: 'IF' '(' expression ')' nested else_if_selection* 'ELSE' nested;
 //else_if_selection: 'ELSE IF' '(' expression ')' nested;
 
-
 GREATER_THAN: '>';
 LESS_THAN: '<';
 GREATER_THAN_EQUAL_TO: '>=';
@@ -72,4 +71,3 @@ NOT_EQUAL: '<>';
 WS: [ \t\r\n]+ -> skip;
 NEWLINE: [\r\n];
 IDENTIFIER: [a-zA-Z_] [a-zA-Z0-9_]*;
-
