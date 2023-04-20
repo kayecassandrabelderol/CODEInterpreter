@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Utils\Speak.g4" />
+    <Content Include="Utils\CODE.g4" />
   </ItemGroup>
 
 </Project>
