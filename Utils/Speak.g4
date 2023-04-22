@@ -47,7 +47,6 @@ LINEBREAK: '$';
 COMMENT: '#' ~[\r\n]* (' ' ~[\r\n]*)* ;
 
 
-
 locical_operators: AND | OR;
 
 bool_expression
@@ -65,12 +64,7 @@ bool_expression
 //if_else_multiple: 'IF' '(' expression ')' nested else_if_selection* 'ELSE' nested;
 //else_if_selection: 'ELSE IF' '(' expression ')' nested;
 
-
-
-
 //operators
-
-
 
 constant: (INTEGER | FLOAT) | BOOL | CHAR ;
 //Data types
@@ -85,10 +79,8 @@ SUB: '-';
 firstOp: '*' | '/' | '%';
 secondOp: '+' | '-' ;
 
-
 //Comparison operators
 comparison_operators: '>' | '<' | '>=' | '<=' | '==' | '<>';
-
 
 //Logical
 AND: 'AND';
