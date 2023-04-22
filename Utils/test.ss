@@ -1,4 +1,4 @@
 BEGIN CODE
-INT a=100, b=200
-DISPLAY: [&] & a & [&] & b & [&]
+INT a = 10
+DISPLAY: a & b
 END CODE

@@ -307,7 +307,6 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
 
     public override object? VisitIdentifierExpression(SpeakParser.IdentifierExpressionContext context)
     {
-
         try
         {
             string variableName = context.IDENTIFIER().GetText();
