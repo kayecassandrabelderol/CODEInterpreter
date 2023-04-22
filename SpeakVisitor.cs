@@ -207,8 +207,6 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             }
         }
 
-
-
         return base.VisitAssignment(context);
     }
 
@@ -221,32 +219,41 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
         Console.WriteLine(str.ToString());
         return null!;
     }
-    
+
 
     public override object? VisitPrintIdentifier(SpeakParser.PrintIdentifierContext context)
     {
         var variableName = context.IDENTIFIER().GetText();
-        //check if variableName is a keyword
+        // Check if variableName is a keyword
         if (_reservedKeywords.Contains(variableName))
             throw new Exception("Variable name is a keyword");
         
-        if (CheckVariables(variableName)) // It is a variable
+        try
         {
-            string[] varInfo = Globalvariables[variableName];
-            if (varInfo[1] == "")
+            if (CheckVariables(variableName)) // It is a variable
             {
-                throw new Exception($"Variable name'{variableName}' has no define value");
-            }
+                string[] varInfo = Globalvariables[variableName];
+                if (varInfo[1] == "")
+                {
+                    throw new Exception($"Variable name '{variableName}' has no defined value");
+                }
 
-            return varInfo[1];
-            
+                return varInfo[1];
+            }
+            else // It is a variable that is not defined
+            {
+                throw new Exception($"Variable '{variableName}' is undefined.");
+            }
         }
-        else // It is a variable that are not define
+        catch (Exception ex)
         {
-                throw new Exception($"Variable {variableName} undefined.");
+            // Display the exception message instead of the line of code
+            Console.WriteLine("Exception occurred: " + ex.Message);
+            Environment.Exit(1);
+            return null;
         }
-          
     }
+
 
     public override object? VisitPrintConcat(SpeakParser.PrintConcatContext context)
     {
@@ -298,18 +305,28 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
     public override object? VisitIdentifierExpression(SpeakParser.IdentifierExpressionContext context)
     {
 
-        string variableName = context.IDENTIFIER().GetText();
-        if (Globalvariables.ContainsKey(variableName))
+        try
         {
-            var varInfo = Globalvariables[variableName];
-            return varInfo[1];
+            string variableName = context.IDENTIFIER().GetText();
+            if (Globalvariables.ContainsKey(variableName))
+            {
+                var varInfo = Globalvariables[variableName];
+                return varInfo[1];
+            }
+            else
+            {
+                throw new Exception($"Variable {variableName} does not exist!");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            throw new Exception($"Variable {variableName} does not exist!");
+            // Display the exception message instead of the line of code
+            Console.WriteLine("Exception occurred: " + ex.Message);
+            Environment.Exit(1);
+            return null;
         }
 
-      
+
     }
 
     public override object? VisitParenthesizedExpression(SpeakParser.ParenthesizedExpressionContext context)
