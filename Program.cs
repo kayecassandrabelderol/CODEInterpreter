@@ -2,8 +2,8 @@
 using CODEInterpreter_v1;
 using CODEInterpreter_v1.Utils;
 
-var fileName = @"C:\Users\Hardelle\Downloads\CODEInterpreter-Assignment-JB\Utils\test.ss";
-
+var fileName = @"";
+//Belderol path: C:\Belderol\3rd Year\Second Semester\CS322 Programming Languages\Activities\CODEInterpreter\Utils\test.ss
 
 if (!File.Exists(fileName))
 {
