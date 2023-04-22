@@ -1,6 +1,8 @@
 grammar Speak;
 
-program: 'BEGIN CODE' line* 'END CODE';
+program: comment* 'BEGIN CODE' line* 'END CODE' comment*;
+
+line: (declaration | display | scan | assignment |comment) NEWLINE* comment*;
 
 line: (declaration | comment) NEWLINE*;
 
