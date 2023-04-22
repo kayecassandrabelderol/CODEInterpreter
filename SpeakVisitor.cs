@@ -42,8 +42,7 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
         string wholeNumber = @"^(?:[+-]?\d+|\d+)$";
         string decimalNumber = @"(^[+-]?\d*\.\d+$)|(^(?:[+-]?\d+|\d+)$)";
         string charValue = @"^([a-zA-Z])$";
-        string boolValue = @"""TRUE""|""FALSE""";
-
+        string boolValue = @"True|False";
            
         if (dataType == "INT")
         {
@@ -92,6 +91,8 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
               
                 value = expression.ToString();
             }
+            
+            
             valid = CheckValue(dataType, value);
             if (valid)
             {
@@ -131,6 +132,7 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
                 value = expression.ToString();
             }
             valid = CheckValue(dataType, value);
+          
             if (valid)
             {
                 Globalvariables[variableName] = new[] { dataType, value };
@@ -150,6 +152,7 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
     public override object? VisitDeclaration(SpeakParser.DeclarationContext context)
     {
         string dataType = context.dataType().GetText();
+        
         foreach (SpeakParser.VariableContext varCtx in context.variable())
         {
            
@@ -158,11 +161,11 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             //check if variable is a keyword
             if (_reservedKeywords.Contains(variableName))
                 throw new Exception("Variable name is a keyword");
+            
            
             var variableValue = varCtx.expression() != null ? Visit(varCtx.expression()) : "";
 
-      
-         
+            
             //if variable value is empty or just initialization
             if (variableValue.ToString() == "")
             {
