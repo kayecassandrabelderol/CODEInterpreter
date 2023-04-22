@@ -46,10 +46,54 @@ LINEBREAK: '$';
 
 COMMENT: '#' ~[\r\n]* (' ' ~[\r\n]*)* ;
 
-INT: [0-9]+;
-FLOAT: [0-9]+ '.' [0-9]+;
-CHAR: [a-zA-Z];
-BOOL: 'true' | 'false';
+
+
+locical_operators: AND | OR;
+
+bool_expression
+                   : BOOL
+                   | expression locical_operators expression
+                   | expression comparison_operators expression
+                   | NOT bool_expression;
+                
+//statement: nested_statement | expression;
+//nested_statement: 'ELSE' statement* | 'ELSE IF' statement*;
+//conditional: if_selection | if_else_selection; //| if_else_multiple;
+
+//if_selection: 'IF' '(' bool_expression ')' 'BEGIN IF' line* statement* 'END IF';
+//if_else_selection: 'IF' '(' bool_expression ')' 'BEGIN IF' line* expression* 'END IF' line* 'ELSE' 'BEGIN IF' line* expression* 'END IF';
+//if_else_multiple: 'IF' '(' expression ')' nested else_if_selection* 'ELSE' nested;
+//else_if_selection: 'ELSE IF' '(' expression ')' nested;
+
+
+
+
+//operators
+
+
+
+constant: (INTEGER | FLOAT) | BOOL | CHAR ;
+//Data types
+INTEGER:  [0-9]+;
+FLOAT:  (([0-9]+ '.' [0-9]+) | ([0-9]? '.' [0-9]+));
+CHAR: '\'' [a-zA-Z] '\'';
+BOOL: '"' 'TRUE' '"'  | '"' 'FALSE' '"';
+STRING: '"' ~'"'* '"';
+ADD: '+';
+SUB: '-';
+//Arithmetic
+firstOp: '*' | '/' | '%';
+secondOp: '+' | '-' ;
+
+
+//Comparison operators
+comparison_operators: '>' | '<' | '>=' | '<=' | '==' | '<>';
+
+
+//Logical
+AND: 'AND';
+OR: 'OR';
+NOT: '!';
 
 WS: [ \t\r\n]+ -> skip;
 NEWLINE: [\r\n];
