@@ -25,8 +25,24 @@ expression
     ;
 
 comment: COMMENT;
-    
+
 dataType: 'INT' | 'FLOAT' | 'CHAR' | 'BOOL';
+
+display: 'DISPLAY:' print;
+
+
+scan: 'SCAN:' IDENTIFIER (',' IDENTIFIER)*;
+
+print : STRING						        #printString
+			| IDENTIFIER					 #printIdentifier
+			| '$'							 #printNewline
+			| ESCAPE						 #printEscape
+			| print '&' print	             #printConcat
+			;
+
+ESCAPE: '[' . ']' ;
+CONCATENATE: '&';
+LINEBREAK: '$'; 
 
 COMMENT: '#' ~[\r\n]* (' ' ~[\r\n]*)* ;
 
@@ -37,4 +53,5 @@ BOOL: 'true' | 'false';
 
 WS: [ \t\r\n]+ -> skip;
 NEWLINE: [\r\n];
-IDENTIFIER: ([a-zA-Z_]([a-zA-Z0-9_])*);
+IDENTIFIER: [a-zA-Z_] [a-zA-Z0-9_]*;
+
