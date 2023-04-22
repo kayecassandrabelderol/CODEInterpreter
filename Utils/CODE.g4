@@ -1,6 +1,6 @@
 grammar CODE;
 
-program: comment* line* comment*;
+program: comment* 'BEGIN CODE' line* 'END CODE' comment*;
 
 line: (declaration | declaration assignment | assignment | declareassign | conditional | display | scan | comment | statement) NEWLINE* comment*;
 
