@@ -1,3 +1,4 @@
+using Antlr4.Runtime.Misc;
 using CODEInterpreter_v1.Utils;
 using System.Text; 
 using System.Text.RegularExpressions;
@@ -149,6 +150,24 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             throw new Exception("Invalid DataType");
         }
     }
+
+    public void AssignVariableScan(string variableName, string dataType, string value)
+    {
+        bool valid = CheckValue(dataType, value);
+       
+        if (valid)
+        {
+            Globalvariables[variableName] = new[] { dataType, value };
+                    
+        }
+        else
+        {
+               
+            throw new Exception("Invalid Value" + value);
+        }
+        
+    }
+
     public override object? VisitDeclaration(SpeakParser.DeclarationContext context)
     {
         string dataType = context.dataType().GetText();
@@ -442,5 +461,75 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             default:
                 throw new InvalidOperationException("Invalid operator");
         }
+    }
+
+
+    public string isConstant(string value)
+    {
+       string numConstant =@"^[-+]?(\d+(\.\d*)?|\.\d+)$"  ;
+       string patternChar  = @"^'([a-zA-Z])'$";
+       string patternBool = @"""TRUE""|""FALSE""";
+       value = value.Trim();
+       // not int
+       if (!Regex.IsMatch(value.Trim(), numConstant) && Regex.IsMatch(value.Trim(), patternChar) && Regex.IsMatch(value.Trim(), patternBool))
+           throw new Exception("Invalid INT " + value);
+       // not char
+       if (Regex.IsMatch(value.Trim(), numConstant) && !Regex.IsMatch(value.Trim(), patternChar) && Regex.IsMatch(value.Trim(), patternBool))
+           throw new Exception("Invalid CHAR " + value);
+        // not bool
+       if (Regex.IsMatch(value.Trim(), numConstant) && Regex.IsMatch(value.Trim(), patternChar) &&
+           !Regex.IsMatch(value.Trim(), patternBool))
+           throw new Exception("Invalid BOOL " + value);
+
+       if (value.Contains("\'"))
+           return value.Replace("\'", "");
+        
+       if (value.Contains("\""))
+           return value.Replace("\"", "");
+
+       return value.Trim();
+
+    }
+
+    public override object  VisitScan([NotNull] SpeakParser.ScanContext context)
+    {
+        var identifiers = context.IDENTIFIER(); // Get all identifier tokens
+     
+        var value = Console.ReadLine();
+        string sValue = value;
+        var values = sValue.Split(','); //not working
+       
+        
+        if (!(identifiers.Length == values.Length))
+        {
+            throw new Exception("Out of Bounds");
+        }
+
+        for (int i = 0; i < values.Length; i++)
+        {
+
+            values[i] = isConstant(value);
+            Console.WriteLine("===="+values[i]);
+        }
+
+        int num = 0;
+        foreach (var identifier in identifiers)
+        {
+            
+            if (!CheckVariables(identifier.GetText()) || _reservedKeywords.Contains(identifier.GetText()))
+            {
+                throw new Exception("Invalid Variable");
+            }
+            else
+            {
+                var variableInfo = Globalvariables[identifier.GetText()];
+                
+                AssignVariableScan(identifier.GetText(),variableInfo[0], values[num]);
+            }
+
+            num++;
+        }
+        return base.VisitScan(context);
+        
     }
 }
