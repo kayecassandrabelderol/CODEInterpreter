@@ -278,6 +278,12 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
         return value;
     }
 
+    public override object? VisitPrintExpression(SpeakParser.PrintExpressionContext context)
+    {
+        return Visit(context.expression());
+    }
+
+
     public override object VisitConstant(SpeakParser.ConstantContext context)
     {
        
