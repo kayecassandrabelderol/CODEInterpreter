@@ -35,6 +35,7 @@ print :     STRING						     #printString
 			| IDENTIFIER					 #printIdentifier
 			| '$'							 #printNewline
 			| ESCAPE						 #printEscape
+			| expression                     #printExpression
 			| print '&' print	             #printConcat	
 			;
 
