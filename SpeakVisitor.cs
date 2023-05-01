@@ -70,7 +70,7 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
 
     }
 
-    public void StoreVariable(string variableName, string dataType, string expression, string value)
+    public void StoreVariable(string variableName, string dataType, string expression, string value, string type)
     {
         bool valid = false;
         bool notArithmetic = false;
@@ -97,47 +97,20 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             valid = CheckValue(dataType, value);
             if (valid)
             {
-                Globalvariables.Add(variableName, new[] { dataType, value });
-            }
-            else
-            {
-               
-                throw new Exception("Invalid Value");
-            }
-        }
-        else
-        {
-            throw new Exception("Invalid DataType");
-        }
-    }
-    public void AssignVariable(string variableName, string dataType, string expression, string value)
-    {
-        bool valid = false;
-        bool notArithmetic = false;
-        
-        notArithmetic =  Regex.IsMatch( expression, @"^[+\-]?(\d+|\d*\.\d+)$");
-        //check if arithmetic
-        //if it is get value and get whole number
-        if ((dataType == "INT" || dataType == "FLOAT" || dataType == "CHAR" || dataType == "BOOL"))
-        {
-            //if it is arithmetic and int truncate it
-            if (dataType == "INT" && !notArithmetic)
-            {
-                double number = double.Parse(value);
-                int intNumber = (int)Math.Truncate(number);
-                value = intNumber.ToString();
-            }
-            if ((dataType == "INT" || dataType == "FLOAT") && notArithmetic)
-            {
-              
-                value = expression.ToString();
-            }
-            valid = CheckValue(dataType, value);
-          
-            if (valid)
-            {
-                Globalvariables[variableName] = new[] { dataType, value };
-                    
+                if (type == "ADD")
+                {
+                    Globalvariables.Add(variableName, new[] { dataType, value });
+                }
+                else if(type == "ASSIGN")
+                {
+                    Globalvariables[variableName] = new[] { dataType, value };
+                }
+                else
+                {
+                    throw new Exception("Type of storing is not recognize");
+                }
+
+
             }
             else
             {
@@ -193,7 +166,7 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             }
             else
             {
-                StoreVariable(variableName,dataType,varCtx.expression().GetText(), variableValue?.ToString());
+                StoreVariable(variableName,dataType,varCtx.expression().GetText(), variableValue?.ToString(),"ADD");
             }
 
         }
@@ -225,7 +198,7 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             else
             {
                 var variableInfo = Globalvariables[variables[i]];
-                AssignVariable(variables[i],variableInfo[0],expression, value.ToString());
+                StoreVariable(variables[i],variableInfo[0],expression, value.ToString(),"ASSIGN");
             }
         }
 
