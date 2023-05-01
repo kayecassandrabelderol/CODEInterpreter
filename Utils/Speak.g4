@@ -2,7 +2,7 @@ grammar Speak;
 
 program: comment* 'BEGIN CODE' line* 'END CODE' comment* EOF;
 
-line: (declaration | display | scan | assignment |comment |  conditional_if_statement ) NEWLINE* comment*;
+line: (declaration | display | scan | assignment |comment | conditional_if_statement | while_loop) NEWLINE* comment*;
 
 declaration:  dataType variable (',' variable)*;
 //count the number of expression if only 1 then the rest is identifier
@@ -60,7 +60,10 @@ bool_expression
  else_if_statement: 'ELSE IF' '(' expression ')' 'BEGIN IF' line* 'END IF';
  else_statement: 'ELSE' 'BEGIN IF' line* 'END IF';
  
- 
+ while_loop: while_statement nested_while* ;
+ while_statement: 'WHILE''(' expression ')'  'BEGIN WHILE' line* 'END WHILE' ;
+ nested_while: 'WHILE''(' expression ')' 'BEGIN WHILE' line* 'END WHILE' ;
+
  
 //statement: nested_statement | expression;
 //nested_statement: 'ELSE' statement* | 'ELSE IF' statement*;
