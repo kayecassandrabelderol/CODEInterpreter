@@ -450,23 +450,25 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
        string patternBool = @"""TRUE""|""FALSE""";
        value = value.Trim();
        // not int
-       if (!Regex.IsMatch(value.Trim(), numConstant) && Regex.IsMatch(value.Trim(), patternChar) && Regex.IsMatch(value.Trim(), patternBool))
-           throw new Exception("Invalid INT " + value);
-       // not char
-       if (Regex.IsMatch(value.Trim(), numConstant) && !Regex.IsMatch(value.Trim(), patternChar) && Regex.IsMatch(value.Trim(), patternBool))
-           throw new Exception("Invalid CHAR " + value);
-        // not bool
-       if (Regex.IsMatch(value.Trim(), numConstant) && Regex.IsMatch(value.Trim(), patternChar) &&
-           !Regex.IsMatch(value.Trim(), patternBool))
-           throw new Exception("Invalid BOOL " + value);
-
-       if (value.Contains("\'"))
-           return value.Replace("\'", "");
-        
-       if (value.Contains("\""))
+       
+       if (Regex.IsMatch(value.Trim(), numConstant))
+       {
+           return value;
+       }
+       else if (Regex.IsMatch(value.Trim(), patternChar))
+       {
+       }
+       else if (Regex.IsMatch(value.Trim(), patternBool))
+       {
            return value.Replace("\"", "");
+       }
+       else
+       {
+           throw new Exception("Invalid constant");
+           
+       }
 
-       return value.Trim();
+       return value;
 
     }
 
@@ -486,9 +488,9 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
 
         for (int i = 0; i < values.Length; i++)
         {
-
-            values[i] = isConstant(value);
-            Console.WriteLine("===="+values[i]);
+           
+            values[i] = isConstant( values[i]);
+           
         }
 
         int num = 0;
