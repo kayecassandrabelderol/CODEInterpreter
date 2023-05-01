@@ -1,6 +1,6 @@
 grammar Speak;
 
-program: comment* 'BEGIN CODE' line* 'END CODE' comment*;
+program: comment* 'BEGIN CODE' line* 'END CODE' comment* EOF;
 
 line: (declaration | display | scan | assignment |comment) NEWLINE* comment*;
 
@@ -10,8 +10,6 @@ declaration:  dataType variable (',' variable)*;
 assignment:  IDENTIFIER ('=' IDENTIFIER)* '=' expression;
 variable: IDENTIFIER ('=' expression)?;
 
-        
-              
 expression
     : IDENTIFIER                                          #identifierExpression
     | '(' expression ')'                                  #parenthesizedExpression
@@ -33,11 +31,11 @@ display: 'DISPLAY:' print;
 
 scan: 'SCAN:' IDENTIFIER (',' IDENTIFIER)*;
 
-print : STRING						        #printString
+print :     STRING						     #printString
 			| IDENTIFIER					 #printIdentifier
 			| '$'							 #printNewline
 			| ESCAPE						 #printEscape
-			| print '&' print	             #printConcat
+			| print '&' print	             #printConcat	
 			;
 
 ESCAPE: '[' . ']' ;
