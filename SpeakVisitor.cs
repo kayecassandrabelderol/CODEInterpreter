@@ -461,10 +461,13 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
        }
        else if (Regex.IsMatch(value.Trim(), patternChar))
        {
+           return value.Replace("\'", "");
        }
        else if (Regex.IsMatch(value.Trim(), patternBool))
        {
-           return value.Replace("\"", "");
+           
+            value = value.Replace("\"", "").ToLower();
+            return char.ToUpper(value[0]) + value.Substring(1);
        }
        else
        {
