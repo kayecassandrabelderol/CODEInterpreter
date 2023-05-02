@@ -11,15 +11,15 @@ assignment:  IDENTIFIER ('=' IDENTIFIER)* '=' expression;
 variable: IDENTIFIER ('=' expression)?;
 
 expression
-    : IDENTIFIER                                          #identifierExpression
-    | '(' expression ')'                                  #parenthesizedExpression
-    | NOT expression                                      #notExpression
+    :  '(' expression ')'                                  #parenthesizedExpression
+    |  (ADD | SUB) expression                              #unaryExpression
+    | 'NOT' expression                                      #notExpression
     | expression firstOp expression                       #firstPrecedence
     | expression secondOp expression                      #secondPrecedence
     | expression comparison_operators expression          #comparisonExpression
     | expression locical_operators expression             #logicalExpression
     | constant                                            #constantExpression
-    | (ADD | SUB) expression                              #unaryExpression
+    |IDENTIFIER                                          #identifierExpression
     ;
 
 comment: COMMENT;
