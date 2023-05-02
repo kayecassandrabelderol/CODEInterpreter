@@ -144,11 +144,12 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
     public override object? VisitDeclaration(SpeakParser.DeclarationContext context)
     {
         string dataType = context.dataType().GetText();
-        
+        List<string> variablesAdded = new List<string>();
         foreach (SpeakParser.VariableContext varCtx in context.variable())
         {
            
             string variableName = varCtx.IDENTIFIER().GetText();
+            variablesAdded.Add(variableName);
             
             //check if variable is a keyword
             if (_reservedKeywords.Contains(variableName))
@@ -170,7 +171,9 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             }
 
         }
-        return null;
+     
+        //we can return an array here for the if statement to count
+        return variablesAdded;
     }
 
     public override object? VisitAssignment(SpeakParser.AssignmentContext context)
@@ -512,5 +515,155 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
         }
         return base.VisitScan(context);
         
+    }
+
+    public override object? VisitConditional_if_statement(SpeakParser.Conditional_if_statementContext context)
+    {
+        SpeakParser.If_statementContext ifStatement = context.if_statement();
+        
+        //evaluate the expression
+        object value = Visit(ifStatement.expression());
+        //if true return
+        //if false ignore and move into another condition
+        if (value.ToString() == "True")
+        {
+            return Visit(ifStatement);
+        }
+
+        //same logic above
+        foreach (SpeakParser.Else_if_statementContext varCtx in context.else_if_statement())
+        {
+            value = Visit(varCtx.expression());
+          
+            if (value.ToString() == "True")
+            {
+                return Visit(varCtx);
+            }
+        }
+        
+        //if above condition remains false
+        //implement the statement of the else
+        SpeakParser.Else_statementContext elseStatement = context.else_statement();
+        return Visit(elseStatement);
+        
+       
+    }
+
+    public override object? VisitIf_statement(SpeakParser.If_statementContext context)
+    { 
+        List<string> variablesAdded = new List<string>();
+        List<string> localVariables = new List<string>();
+        foreach (var child in context.children)
+        {
+            
+            if (child is SpeakParser.LineContext lineContext)
+            {
+                foreach (var lineChild in lineContext.children)
+                {
+                    if (lineChild is SpeakParser.DeclarationContext declarationContext)
+                    {
+                        Object variables = VisitDeclaration(declarationContext);
+                        variablesAdded = variables as List<string>;
+                        localVariables.AddRange(variablesAdded);
+                    }
+                    else
+                    {
+                        Visit(lineChild);
+                    }
+                }
+            }
+            else
+            {
+                Visit(child);
+            }
+        }
+
+        foreach (string variable in variablesAdded)
+        {
+           
+            Globalvariables.Remove(variable);
+        }
+      
+        
+        return null;
+    }
+
+    public override object? VisitElse_if_statement(SpeakParser.Else_if_statementContext context)
+    {
+    
+        List<string> variablesAdded = new List<string>();
+        List<string> localVariables = new List<string>();
+        foreach (var child in context.children)
+        {
+            
+            if (child is SpeakParser.LineContext lineContext)
+            {
+                foreach (var lineChild in lineContext.children)
+                {
+                    if (lineChild is SpeakParser.DeclarationContext declarationContext)
+                    {
+                        Object variables = VisitDeclaration(declarationContext);
+                        variablesAdded = variables as List<string>;
+                        localVariables.AddRange(variablesAdded);
+                    }
+                    else
+                    {
+                        Visit(lineChild);
+                    }
+                }
+            }
+            else
+            {
+                Visit(child);
+            }
+        }
+
+        foreach (string variable in variablesAdded)
+        {
+           
+            Globalvariables.Remove(variable);
+        }
+      
+        
+        return null;
+    }
+
+    public override object? VisitElse_statement(SpeakParser.Else_statementContext context)
+    {
+        List<string> variablesAdded = new List<string>();
+        List<string> localVariables = new List<string>();
+        foreach (var child in context.children)
+        {
+            
+            if (child is SpeakParser.LineContext lineContext)
+            {
+                foreach (var lineChild in lineContext.children)
+                {
+                    if (lineChild is SpeakParser.DeclarationContext declarationContext)
+                    {
+                        Object variables = VisitDeclaration(declarationContext);
+                        variablesAdded = variables as List<string>;
+                        localVariables.AddRange(variablesAdded);
+                    }
+                    else
+                    {
+                        Visit(lineChild);
+                    }
+                }
+            }
+            else
+            {
+                Visit(child);
+            }
+        }
+
+        foreach (string variable in variablesAdded)
+        {
+           
+            Globalvariables.Remove(variable);
+        }
+      
+        
+        return null;
     }
 }
