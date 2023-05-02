@@ -428,21 +428,22 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
     public override object? VisitNotExpression(SpeakParser.NotExpressionContext context)
     {
         var expression = Visit(context.expression())!;
-        switch (context.NOT().GetText())
-        {
-            case "!":
-            {
-                if (expression is bool)
+        
+                if (expression.ToString() == "True" || expression.ToString() == "True")
                 {
-                    return !(bool)expression;
+                    if (expression.ToString() == "True")
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
                 } else
                 {
                     throw new Exception("Invalid boolean value");
                 }
-            }
-            default:
-                throw new InvalidOperationException("Invalid operator");
-        }
+
     }
 
 
