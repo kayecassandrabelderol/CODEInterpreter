@@ -666,8 +666,75 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
            
             Globalvariables.Remove(variable);
         }
-      
-        
         return null;
     }
+
+    public override object? VisitWhile_statement(SpeakParser.While_statementContext context)
+    {
+        object expression = Visit(context.expression());
+       
+        List<string> variablesAdded = new List<string>();
+        List<string> localVariables = new List<string>();
+        if (expression.ToString() == "True")
+        {
+            bool value = true;
+            while (value)
+            {
+                foreach (var child in context.children)
+                {
+                    if (child is SpeakParser.LineContext lineContext)
+                    {
+                        foreach (var lineChild in lineContext.children)
+                        {
+                            if (lineChild is SpeakParser.DeclarationContext declarationContext)
+                            {
+                                Object variables = VisitDeclaration(declarationContext);
+                                variablesAdded = variables as List<string>;
+                                localVariables.AddRange(variablesAdded);
+                            }
+                            else
+                            {
+                                Visit(lineChild);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Visit(child);
+                    }
+                    
+                }
+                
+                expression = Visit(context.expression());
+                //if false exit the while statement and clear the varialbes inside
+                if (expression.ToString() == "False")
+                {
+                    foreach (string variable in variablesAdded)
+                    {
+                   
+                        Globalvariables.Remove(variable);
+                    }
+                    return null;
+                }
+                //every time it iterates all declared variables will be remove
+                foreach (string variable in variablesAdded)
+                {
+                   
+                    Globalvariables.Remove(variable);
+                }
+                
+            }
+        }
+        else if (expression.ToString() == "False")
+        {
+            return null;
+        }
+        else
+        {
+            throw new Exception("The expression value in While statement is not Boolean");
+        }
+        return null;
+    }
+    
+    
 }
