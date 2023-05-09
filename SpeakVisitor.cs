@@ -549,8 +549,12 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
         //if above condition remains false
         //implement the statement of the else
         SpeakParser.Else_statementContext elseStatement = context.else_statement();
+        if (elseStatement != null) 
+        {
         return Visit(elseStatement);
+        }
         
+        return null;
        
     }
 
