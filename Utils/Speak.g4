@@ -33,7 +33,7 @@ scan: 'SCAN:' IDENTIFIER (',' IDENTIFIER)*;
 
 print :     STRING						     #printString
 			| IDENTIFIER					 #printIdentifier
-			| '$'							 #printNewline
+			| '$' 			                 #printNewline
 			| ESCAPE						 #printEscape
 			| expression                     #printExpression
 			| print '&' print	             #printConcat	
