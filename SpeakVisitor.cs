@@ -388,8 +388,9 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
 
     public override object? VisitComparisonExpression(SpeakParser.ComparisonExpressionContext context)
     {
-        var left = Visit(context.expression(0))!;
-        var right = Visit(context.expression(1))!;
+        var left = Visit(context.expression(0))!.ToString();
+        var right = Visit(context.expression(1))!.ToString();
+
  
         switch (context.comparison_operators().GetText())
         {
@@ -402,9 +403,9 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             case "<=":
                 return Convert.ToDouble(left) <= Convert.ToDouble(right);
             case "==":
-                return Convert.ToDouble(left) == Convert.ToDouble(right);
+                 return left.Equals(right);
             case "<>":
-                return Convert.ToDouble(left) != Convert.ToDouble(right);
+                return !left.Equals(right);
             default:
                 throw new InvalidOperationException("Invalid operator");
         }
