@@ -89,7 +89,6 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             }
             if ((dataType == "INT" || dataType == "FLOAT") && notArithmetic)
             {
-              
                 value = expression.ToString();
             }
             
@@ -107,10 +106,8 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
                 }
                 else
                 {
-                    throw new Exception("Type of storing is not recognize");
+                    throw new Exception("Type of storing is not recognized");
                 }
-
-
             }
             else
             {
@@ -131,11 +128,9 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
         if (valid)
         {
             Globalvariables[variableName] = new[] { dataType, value };
-                    
         }
         else
         {
-               
             throw new Exception("Invalid Value" + value);
         }
         
@@ -147,34 +142,38 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
         List<string> variablesAdded = new List<string>();
         foreach (SpeakParser.VariableContext varCtx in context.variable())
         {
-           
+
             string variableName = varCtx.IDENTIFIER().GetText();
+
+            // Check if variable already exists
+            if (Globalvariables.ContainsKey(variableName))
+            {
+                throw new Exception($"Variable '{variableName}' already exists!");
+            }
+
             variablesAdded.Add(variableName);
-            
+
             //check if variable is a keyword
             if (_reservedKeywords.Contains(variableName))
-                throw new Exception("Variable name is a keyword");
+                throw new Exception($"Variable '{variableName}' is a keyword");
             
-           
             var variableValue = varCtx.expression() != null ? Visit(varCtx.expression()) : "";
-
             
             //if variable value is empty or just initialization
             if (variableValue.ToString() == "")
             {
-                
-                Globalvariables.Add(variableName, new[] { dataType, variableValue?.ToString()});
+                Globalvariables.Add(variableName, new[] { dataType, variableValue?.ToString() });
             }
             else
             {
-                StoreVariable(variableName,dataType,varCtx.expression().GetText(), variableValue?.ToString(),"ADD");
+                StoreVariable(variableName, dataType, varCtx.expression().GetText(), variableValue?.ToString(), "ADD");
             }
 
         }
-     
         //we can return an array here for the if statement to count
         return variablesAdded;
     }
+
 
     public override object? VisitAssignment(SpeakParser.AssignmentContext context)
     {
@@ -195,7 +194,6 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             //if either is true then invalid variable
             if (!CheckVariables(variables[i]) || _reservedKeywords.Contains(variables[i]))
             {
-             
                 throw new Exception("Invalid Variable");
             }
             else
@@ -224,7 +222,7 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
         var variableName = context.IDENTIFIER().GetText();
         // Check if variableName is a keyword
         if (_reservedKeywords.Contains(variableName))
-            throw new Exception("Variable name is a keyword");
+            throw new Exception($"Variable '{variableName}' is a keyword");
         
         try
         {
@@ -328,8 +326,6 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             Environment.Exit(1);
             return null;
         }
-
-
     }
 
     public override object? VisitParenthesizedExpression(SpeakParser.ParenthesizedExpressionContext context)
@@ -354,7 +350,8 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             throw new InvalidOperationException("Cannot operate if value is empty");
         }
 
-        switch (context.firstOp().GetText())
+        var op = context.firstOp().GetText();
+        switch (op)
         {
             case "*":
                 return (Convert.ToDouble(left) * Convert.ToDouble(right)).ToString("N1");
@@ -363,7 +360,8 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             case "%":
                 return (Convert.ToDouble(left) % Convert.ToDouble(right)).ToString("N1");
             default:
-                throw new InvalidOperationException("Invalid operator");
+                //cannot perform this error if wala gi declare sa grammar ang any other symbols
+                throw new InvalidOperationException($"Invalid operator '{op}'");
         }
     }
 
@@ -429,10 +427,11 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
     public override object? VisitNotExpression(SpeakParser.NotExpressionContext context)
     {
         var expression = Visit(context.expression())!;
-        
-                if (expression.ToString() == "True" || expression.ToString() == "True")
+        //changes
+        var booleanValue = expression.ToString();
+                if (booleanValue == "True" || booleanValue == "False")
                 {
-                    if (expression.ToString() == "True")
+                    if (booleanValue == "True")
                     {
                         return false;
                     }
@@ -442,7 +441,7 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
                     }
                 } else
                 {
-                    throw new Exception("Invalid boolean value");
+                    throw new Exception($"Invalid boolean value '{booleanValue}'");
                 }
 
     }
@@ -480,7 +479,7 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
 
     }
 
-    public override object  VisitScan([NotNull] SpeakParser.ScanContext context)
+    public override object VisitScan([NotNull] SpeakParser.ScanContext context)
     {
         var identifiers = context.IDENTIFIER(); // Get all identifier tokens
      
@@ -504,10 +503,11 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
         int num = 0;
         foreach (var identifier in identifiers)
         {
-            
+            //to ask
             if (!CheckVariables(identifier.GetText()) || _reservedKeywords.Contains(identifier.GetText()))
             {
-                throw new Exception("Invalid Variable");
+                //to ask
+                throw new Exception($"Invalid variable");
             }
             else
             {
