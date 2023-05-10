@@ -388,8 +388,8 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
     {
         var left = Visit(context.expression(0))!.ToString();
         var right = Visit(context.expression(1))!.ToString();
+        double result;
 
- 
         switch (context.comparison_operators().GetText())
         {
             case ">":
@@ -401,9 +401,24 @@ public class SpeakVisitor : SpeakBaseVisitor<object?>
             case "<=":
                 return Convert.ToDouble(left) <= Convert.ToDouble(right);
             case "==":
+                if (double.TryParse(left, out result) && double.TryParse(right, out result))
+                {
+                    return Convert.ToDouble(left).Equals(Convert.ToDouble(right));
+                }
+                else
+                {
                  return left.Equals(right);
+                }      
             case "<>":
+                if (double.TryParse(left, out result) && double.TryParse(right, out result))
+                {
+                    return !Convert.ToDouble(left).Equals(Convert.ToDouble(right));
+                }
+                else
+                {
                 return !left.Equals(right);
+                }
+               
             default:
                 throw new InvalidOperationException("Invalid operator");
         }
